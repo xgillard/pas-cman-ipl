@@ -33,6 +33,13 @@ fichier binaire dans le répertoie `target/release` du projet. Une fois le jeu c
 ce fichier binaire ainsi que le dossier `resources` qui est nécessaire pour que le jeu puisse s'exécuter
 correctement.
 
+### Notes
+
+Afin de compiler le programme sur votre machine linux, vous aurez sans doute aussi besoin d'installer les librairies
+suivantes:
+```
+sudo install cmake pkg-config libfontconfig-dev librust-servo-fontconfig-sys-dev
+```
 
 ## Credits
 This game includes artwork by "sethbyrd.com". For more info about this work or its creator, check: "www.sethbyrd.com", 

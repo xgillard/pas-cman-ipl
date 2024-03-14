@@ -1,7 +1,7 @@
 use std::{io::{stdin, Read}, thread};
 
 use legion::Schedule;
-use pas_cman::{main_loop, render_map_system, BResult, BTermBuilder, State};
+use pas_cman_ipl::{main_loop, render_map_system, BResult, BTermBuilder, State};
 
 fn main() -> BResult<()> {
     let w = 30;
@@ -11,12 +11,12 @@ fn main() -> BResult<()> {
     let mut state = State::new(rx);
     
     thread::spawn(move || {
-        let mut buffer = [0_u8; std::mem::size_of::<pas_cman::pascman_protocol::Message>()];
+        let mut buffer = [0_u8; std::mem::size_of::<pas_cman_ipl::pascman_protocol::Message>()];
         loop {
             stdin().read_exact(&mut buffer).expect("could not properly read the buffer");
             
             unsafe {
-                let message = buffer.as_mut_ptr() as *mut pas_cman::pascman_protocol::Message;
+                let message = buffer.as_mut_ptr() as *mut pas_cman_ipl::pascman_protocol::Message;
                 sx.send(*message).expect("error sending message on the channel");
             };
         }
