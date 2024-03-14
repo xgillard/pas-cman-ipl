@@ -12,20 +12,20 @@ int main(int argc, const char const* const* argv) {
     int id = 0;
     for(uint32_t x = 0; x < WIDTH; x++) {
         for (uint32_t y=0; y < HEIGHT; y++) {
-            Spawn spawn = {
+            struct Spawn spawn = {
                 .msgt = SPAWN,
                 .id   = id++,
                 .item = WALL,
-                .pow  = {
+                .pos  = {
                     .x = x,
                     .y = y
                 }
             }; 
-            Message msg;
+            union Message msg;
             msg.spawn = spawn;
 
-            size_t written = fwrite(&msg, sizeof(Message), 1, f);
-            if (written < sizeof(Message)) {
+            size_t written = fwrite(&msg, sizeof(union Message), 1, f);
+            if (written < 1) {
                 perror("fwrite");
                 exit(1);
             }
