@@ -13,7 +13,10 @@ fn main() -> BResult<()> {
     thread::spawn(move || {
         let mut buffer = [0_u8; std::mem::size_of::<pas_cman_ipl::pascman_protocol::Message>()];
         loop {
-            stdin().read_exact(&mut buffer).expect("could not properly read the buffer");
+            if let Err(res) = stdin().read_exact(&mut buffer) {
+                eprintln!("error reading binary data from stdin: {res}");
+                break;
+            }
             
             unsafe {
                 let message = buffer.as_mut_ptr() as *mut pas_cman_ipl::pascman_protocol::Message;
