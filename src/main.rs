@@ -12,16 +12,11 @@ fn main() -> BResult<()> {
     
     thread::spawn(move || {
         let mut buffer = [0_u8; std::mem::size_of::<pas_cman_ipl::pascman_protocol::Message>()];
-        loop {
-            if let Err(res) = stdin().read_exact(&mut buffer) {
-                eprintln!("error reading binary data from stdin: {res}");
-                break;
-            }
-            
+        while stdin().read_exact(&mut buffer).is_ok() {
             unsafe {
                 let message = buffer.as_mut_ptr() as *mut pas_cman_ipl::pascman_protocol::Message;
                 sx.send(*message).expect("error sending message on the channel");
-            };
+            }
         }
     });
 
