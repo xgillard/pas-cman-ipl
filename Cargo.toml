@@ -1,0 +1,26 @@
+[package]
+name    = "pas-cman"
+version = "0.1.0"
+edition = "2021"
+build   = "build.rs"
+description = "pas cman c'est pas pacman"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bracket-lib = "0.8.7"
+legion      = "0.4.0"
+structopt   = "0.3.26"
+
+[target.'cfg(windows)'.build-dependencies]
+winres      = "0.1"
+
+[package.metadata.bundle]
+name       = "pas-cman"
+identifier = "com.github.xgillard.pas-cman"
+icon       = [ "icon.ico" ]
+version    = "0.1.0"
+resources  = [ "resources/map.txt", "resources/pas-cman-font-32.png", "resources/terminal8x8.png" ]
+category   = "game"
+copyright  = "MIT No Attribution Copyright 2024 -- Xavier GILLARD"
+short_description = "pas cman c'est pas pacman"
