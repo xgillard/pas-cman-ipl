@@ -1,5 +1,3 @@
-use std::time::Instant;
-
 use legion::World;
 
 use crate::*;
@@ -13,8 +11,9 @@ static VILLAIN_MARKS : [[char; 4]; 4] = [
     ['$', '4', 'D', '$'],
 ];
 
-pub fn spawn_hero (ecs : &mut World, pos : Position) {
+pub fn spawn_hero (ecs : &mut World, id: u32, pos : Position) {
     ecs.push((
+        Id(id),
         Character(&HERO_MARKS),
         Hero,
         Victim,
@@ -23,28 +22,21 @@ pub fn spawn_hero (ecs : &mut World, pos : Position) {
         ColorPair::new(WHITE, BLACK),
     ));
 }
-pub fn spawn_villain(ecs : &mut World, pos : Position, i: usize) {
+pub fn spawn_villain(ecs : &mut World, id: u32, pos : Position) {
     ecs.push((
-        Character(&VILLAIN_MARKS[i % VILLAIN_MARKS.len()]),
+        Id(id),
+        Character(&VILLAIN_MARKS[id as usize % VILLAIN_MARKS.len()]),
         Villain,
         Hunter,
-        RandomWalk{time: Instant::now()},
-        SmartBot{time: Instant::now()},
         pos,
         Direction::Down,
         ColorPair::new(WHITE, BLACK),
     ));
 }
-pub fn spawn_seed(ecs : &mut World, pos : Position) {
+pub fn spawn_seed(ecs : &mut World, id: u32, pos : Position) {
     ecs.push((
+        Id(id),
         Food('.'),
         pos,
-    ));
-}
-pub fn spawn_powerup(ecs : &mut World, pos : Position) {
-    ecs.push((
-        Food('*'),
-        pos,
-        Powerup,
     ));
 }

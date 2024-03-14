@@ -18,6 +18,9 @@ pub mod game_state;
 /// how to spawn stuffs in the game
 pub mod spawn;
 
+/// the external protocol to interact with the game
+pub mod pascman_protocol;
+
 pub use utils::*;
 pub use resources::*;
 pub use components::*;

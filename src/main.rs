@@ -1,10 +1,27 @@
+use std::{io::{stdin, Read}, thread};
+
 use legion::Schedule;
 use pas_cman::{main_loop, render_map_system, BResult, BTermBuilder, State};
 
 fn main() -> BResult<()> {
-    let mut state = State::new();
-    let (w, h) = state.load_file("resources/map.txt").expect("could not load map");
+    let w = 30;
+    let h = 20;
+
+    let (sx, rx) = std::sync::mpsc::channel();
+    let mut state = State::new(rx);
     
+    thread::spawn(move || {
+        let mut buffer = [0_u8; std::mem::size_of::<pas_cman::pascman_protocol::Message>()];
+        loop {
+            stdin().read_exact(&mut buffer).expect("could not properly read the buffer");
+            
+            unsafe {
+                let message = buffer.as_mut_ptr() as *mut pas_cman::pascman_protocol::Message;
+                sx.send(*message).expect("error sending message on the channel");
+            };
+        }
+    });
+
     let context = BTermBuilder::new()
         .with_title("pas cman")
         .with_dimensions(w, h)

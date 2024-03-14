@@ -73,6 +73,10 @@ impl Position {
     pub fn into_point(self) -> Point {
         Point::new(self.x, self.y)
     }
+
+    pub fn is_valid(self) -> bool {
+        self.x < 30 && self.y < 20
+    }
 }
 
 /// This are the stuffs on the floor which the hero is trying to eat
@@ -119,3 +123,12 @@ pub struct DelayedSwapRole {
 
 #[derive(Debug, Clone, Copy)]
 pub struct Dead;
+
+#[derive(Debug, Clone, Copy)]
+pub struct Victory;
+
+#[derive(Debug, Clone, Copy)]
+pub struct Defeat;
+
+#[derive(Debug, Clone, Copy)]
+pub struct Id(pub u32);
