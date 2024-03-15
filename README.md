@@ -35,10 +35,10 @@ correctement.
 
 ### Notes
 
-Afin de compiler le programme sur votre machine linux, vous aurez sans doute aussi besoin d'installer les librairies
-suivantes:
+Afin de compiler le programme sur votre machine linux (ou WSL sur windows), vous aurez sans doute aussi besoin d'installer
+les librairies suivantes:
 ```
-sudo install cmake pkg-config libfontconfig-dev librust-servo-fontconfig-sys-dev
+sudo install cmake pkg-config libfontconfig-dev librust-servo-fontconfig-sys-dev libwayland-bin libxrandr2 libxi6 libx11-xcb libgl1
 ```
 
 ## Credits
