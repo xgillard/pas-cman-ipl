@@ -113,7 +113,7 @@ pub enum Direction {
 
 /// 
 #[derive(Debug, Clone, Copy)]
-pub struct IntendsToMove(pub Direction);
+pub struct IntendsToMove(pub Position);
 
 #[derive(Debug, Clone, Copy)]
 pub struct DelayedSwapRole {

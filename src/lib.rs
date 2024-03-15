@@ -5,8 +5,6 @@
 //! Date:    March 2023
 //! Licence: MIT 
 
-/// some utility functions
-pub mod utils;
 /// any resource manipulated by the game
 pub mod resources;
 /// properties of the entities
@@ -21,7 +19,6 @@ pub mod spawn;
 /// the external protocol to interact with the game
 pub mod pascman_protocol;
 
-pub use utils::*;
 pub use resources::*;
 pub use components::*;
 pub use systems::*;

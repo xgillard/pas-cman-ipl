@@ -84,7 +84,7 @@ pub struct Movement {
     /// L'identifiant unique de l'item qui doit se déplacer sur la carte
     pub id:  u32,
     /// La nouvelle position de l'item 
-    pub dir: Direction
+    pub pos: Position
 }
 
 #[repr(C)]

@@ -16,7 +16,7 @@ jamais rencontré non plus.
 
 **CEST POURQUOI NOUS VOUS ENCOURAGEONS ACTIVEMENT A ATTENDRE QUE LE PROJET SOIT FINI AVANT D'ALLER EN LIRE LE CODE**
 
-## Compiler le Jeu
+## Etape 1: Compiler le Jeu
 
 Comme le jeu en lui même n'est pas écrit en _C_ mais en _Rust_ (il s'agit toutefois de deux langages très proches), 
 vous allez devoir utiliser le compilateur Rust pour transformer le code source en fichier executable. 
@@ -36,9 +36,32 @@ correctement.
 ### Notes
 
 Afin de compiler le programme sur votre machine linux (ou WSL sur windows), vous aurez sans doute aussi besoin d'installer
-les librairies suivantes:
+les librairies suivantes (si vous utilisez une distribution desktop, il y a de fortes chances que tous ces paquets soient 
+déjà préinstallés):
 ```
 sudo install cmake pkg-config libfontconfig-dev librust-servo-fontconfig-sys-dev libwayland-bin libxrandr2 libxi6 libx11-xcb libgl1
+```
+
+## Etape 2: Se familiariser avec le protocole du jeu
+
+Dans le fichier `pascman.h`, vos professeurs adorés vous ont fourni la définition des structures qui sont necessaires
+afin de pouvoir piloter l'interface de votre jeu depuis un système extérieur. Ce protocole est somme toutes assez
+simple: il consiste simplement a envoyer une série de messages (des records binaires) qui sont envoyés à l'interface 
+graphique en écrivant sur son entrée standard.
+
+Vous devez donc commencer par aller lire le header qui vous est fourni afin de comprendre le fonctionnement global de
+ce protocole et vous familiariser avec les messages utilisés.
+
+### AFIN DE VOUS AIDER A Y VOIR PLUS CLAIR
+Afin de vous aider à y voir plus clair, nous vous avons aussi fourni le programme `exemple.c` qui lit un fichier 
+comprenant une représentation textuelle de la map et écrit tous les messages nécessaires sur sa sortie standard.
+Ce petit programme d'exemple continue ensuite en faisant courir en boucle un méchant derriere le heros.
+
+Vous pourrez donc tester que tout fonctionne bien chez vous en lancant les commandes suivantes:
+```
+cargo build --release
+gcc -o exemple exemple.c
+./exemple | ./target/release/pas-cman-ipl
 ```
 
 ## Credits

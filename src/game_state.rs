@@ -77,12 +77,7 @@ impl State {
                 },
                 MessageType::MOVEMENT => {
                     let mvmt = msg.movement;
-                    let dir = match mvmt.dir {
-                        pascman_protocol::Direction::DOWN => Direction::Down,
-                        pascman_protocol::Direction::LEFT => Direction::Left,
-                        pascman_protocol::Direction::RIGHT=> Direction::Right,
-                        pascman_protocol::Direction::UP   => Direction::Up
-                    };
+                    let pos = Position{x: mvmt.pos.x as usize, y: mvmt.pos.y as usize};
                     let entity = <(Entity, &Id)>::query()
                         .iter(ecs)
                         .find(|(_entity, id)| id.0 == mvmt.id)
@@ -90,7 +85,7 @@ impl State {
 
                     if let Some(entity) = entity {
                         if let Some(mut entry) = ecs.entry(entity) {
-                            entry.add_component(IntendsToMove(dir));
+                            entry.add_component(IntendsToMove(pos));
                         }
                     }
                 }

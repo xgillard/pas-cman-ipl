@@ -104,8 +104,19 @@ pub fn move_to_next_place(ecs: &mut SubWorld, cmd: &mut CommandBuffer) {
         .iter_mut(ecs)
         .for_each(|(entity, position, direction, intention)| {
             cmd.remove_component::<IntendsToMove>(*entity);
-            *direction = intention.0;
-            *position  = next_position(*position, intention.0);
+            let Position { x, y } = intention.0;
+
+            if x > position.x {
+                *direction = Direction::Right;
+            } else if x < position.x {
+                *direction = Direction::Left;
+            } else if y > position.y {
+                *direction = Direction::Down;
+            } else if y < position.y {
+                *direction = Direction::Up;
+            }
+            
+            *position  = intention.0;
         });
 }
 

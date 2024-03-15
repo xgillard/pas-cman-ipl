@@ -63,15 +63,6 @@ struct Spawn {
     struct Position pos;
 };
 
-
-/// La direction dans laquelle un item se déplace
-enum Direction {
-    DOWN  = 0,
-    RIGHT = 1,
-    LEFT  = 2,
-    UP    = 3
-};
-
 /// Spawn est le message qui sert à introduire un item dans le jeu.
 /// 
 /// Tous les items ont un identifiant numérique qui leur est attaché tout au cours de la 
@@ -82,7 +73,7 @@ struct Movement {
     /// L'identifiant unique de l'item qui doit se déplacer sur la carte
     uint32_t id;
     /// La nouvelle position de l'item 
-    enum Direction dir;
+    struct Position pos;
 };
 
 /// Cette union encapsule tous les messages que vous pourriez vouloir envoyer à l'interface
