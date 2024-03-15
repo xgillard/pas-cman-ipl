@@ -37,11 +37,16 @@ pub enum Item {
 /// Le type de message qui est envoyé depuis l'extérieur à notre interface de jeu
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
+#[allow(non_camel_case_types)]
 pub enum MessageType {
     /// To introduce an item in the game
     SPAWN = 1,
     /// To indicate that a given item moves on the map
     MOVEMENT = 2,
+    EAT_FOOD = 3,
+    KILL_VICTIM = 4,
+    VICTORY = 5,
+    DEFEAT = 6,
 }
 
 /// Spawn est le message qui sert à introduire un item dans le jeu.
@@ -62,16 +67,6 @@ pub struct Spawn {
 }
 
 
-/// La direction dans laquelle un item se déplace
-#[repr(C)]
-#[derive(Debug, Clone, Copy)]
-pub enum Direction {
-    DOWN  = 0,
-    RIGHT = 1,
-    LEFT  = 2,
-    UP    = 3
-}
-
 /// Spawn est le message qui sert à introduire un item dans le jeu.
 /// 
 /// Tous les items ont un identifiant numérique qui leur est attaché tout au cours de la 
@@ -87,10 +82,51 @@ pub struct Movement {
     pub pos: Position
 }
 
+
+/// Indique que le joueur a gagné
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+pub struct Victory {
+    /// Ce messagetype devra toujours avoir la valeur VICTORY
+    pub msgt: MessageType,
+}
+
+/// Indique que le joueur a perdu
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+pub struct Defeat {
+    /// Ce messagetype devra toujours avoir la valeur DEFEAT
+    pub msgt: MessageType,
+}
+
+/// Indique que le qqn a mangé de la nourriture
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+pub struct EatFood {
+    /// Ce messagetype devra toujours avoir la valeur EAT_FOOD
+    pub msgt: MessageType,
+    pub eater: u32,
+    pub food: u32,
+}
+
+/// Indique que quelqu'un a tué qqn d'autre
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+pub struct Kill {
+    /// Ce messagetype devra toujours avoir la valeur KILL_VICTIM
+    pub msgt: MessageType,
+    pub killer: u32,
+    pub killed: u32,
+}
+
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub union Message {
     pub msgt: MessageType,
     pub spawn: Spawn,
     pub movement: Movement,
+    pub eat_food: EatFood,
+    pub kill_victim: Kill,
+    pub victory: Victory,
+    pub defeat: Defeat,
 } 

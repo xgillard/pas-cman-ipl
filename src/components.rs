@@ -6,9 +6,7 @@
 //! Date:    March 2023
 //! Licence: MIT 
 
-use std::time::Instant;
-
-use bracket_lib::{color::ColorPair, terminal::Point};
+use bracket_lib::terminal::Point;
 
 /// This component indicates that the entity is a character 
 /// (they should be rendered on top of both the map and the food)
@@ -38,30 +36,6 @@ pub struct Hero;
 #[derive(Debug, Clone, Copy)]
 pub struct Villain;
 
-/// The hunter has the ability to kill victims
-#[derive(Debug, Clone, Copy)]
-pub struct Hunter;
-
-/// The victim is being killed whenever it encounters a hunter
-#[derive(Debug, Clone, Copy)]
-pub struct Victim;
-
-/// The role indicates whether the entity needs to behave as a hunter
-/// or as a victim.
-#[derive(Debug, Clone, Copy)]
-pub enum Role {
-    Hunter,
-    Victim
-}
-
-/// This component indicates that the entity will change role at a given instant
-#[derive(Debug, Clone, Copy)]
-pub struct SwapRole {
-    pub add: Role,
-    pub remove: Role,
-    pub color: ColorPair,
-}
-
 /// The position of an entity on the map
 #[derive(Default, Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Position {
@@ -84,25 +58,6 @@ impl Position {
 #[derive(Debug, Clone, Copy)]
 pub struct Food(pub char);
 
-/// This is a magic powerup. It can also be eated by the hero just like
-/// the regular food. However, whenever the hero eats a powerup, all
-/// the villains are made edible for a short (a few seconds) period of
-/// time.
-#[derive(Debug, Clone, Copy)]
-pub struct Powerup;
-
-/// The entity wanders erratically on the map
-#[derive(Debug, Clone, Copy)]
-pub struct RandomWalk{
-    pub time: Instant
-}
-
-/// The entity is blood thirsty and will walk the shortest path to the hero
-#[derive(Debug, Clone, Copy)]
-pub struct SmartBot {
-    pub time: Instant
-}
-
 #[derive(Debug, Clone, Copy)]
 pub enum Direction {
     Down = 0,
@@ -116,19 +71,13 @@ pub enum Direction {
 pub struct IntendsToMove(pub Position);
 
 #[derive(Debug, Clone, Copy)]
-pub struct DelayedSwapRole {
-    pub time: Instant,
-    pub swap: SwapRole,
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct Dead;
-
-#[derive(Debug, Clone, Copy)]
-pub struct Victory;
-
-#[derive(Debug, Clone, Copy)]
-pub struct Defeat;
-
-#[derive(Debug, Clone, Copy)]
 pub struct Id(pub u32);
+
+pub struct EatFood{
+    pub eater: u32,
+    pub food: u32
+}
+pub struct Kill {
+    pub killer: u32,
+    pub killed: u32,
+}

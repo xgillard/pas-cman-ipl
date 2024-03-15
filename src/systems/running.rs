@@ -15,15 +15,8 @@ pub fn run_game_schedule() -> Schedule {
         .flush()
         .add_system(move_to_next_place_system())
         .flush()
-        .add_system(eat_food_system())
-        .add_system(kill_victim_system())
-        .flush()
         .add_system(render_food_system())
         .add_system(render_characters_system())
-        .flush()
-        .add_system(remove_dead_system())
-        .flush()
-        .add_system(endgame_system())
         .build()
 }
 
@@ -118,73 +111,4 @@ pub fn move_to_next_place(ecs: &mut SubWorld, cmd: &mut CommandBuffer) {
             
             *position  = intention.0;
         });
-}
-
-#[system]
-#[read_component(Position)]
-#[read_component(Hero)]
-#[read_component(Food)]
-pub fn eat_food(ecs: &mut SubWorld, cmd: &mut CommandBuffer) {
-    let mut hero = Position::default();
-    <&Position>::query()
-        .filter(component::<Hero>())
-        .iter(ecs)
-        .for_each(|p| hero = *p);
-
-    <(Entity, &Position)>::query()
-        .filter(component::<Food>())
-        .iter(ecs)
-        .for_each(|(entity, pos)| 
-            if *pos == hero { 
-                cmd.add_component(*entity, Dead); 
-            });
-}
-
-#[system]
-#[read_component(Position)]
-#[read_component(Hunter)]
-#[read_component(Victim)]
-pub fn kill_victim(ecs: &mut SubWorld, cmd: &mut CommandBuffer) {
-    <&Position>::query()
-        .filter(component::<Hunter>())
-        .iter(ecs)
-        .for_each(|hunter| {
-            <(Entity, &Position)>::query()
-                .filter(component::<Victim>())
-                .iter(ecs)
-                .for_each(|(entity, victim)| {
-                    if hunter == victim {
-                        cmd.add_component(*entity, Dead);
-                    }
-                })
-        });
-}
-
-#[system]
-#[read_component(Dead)]
-pub fn remove_dead(ecs: &mut SubWorld, cmd: &mut CommandBuffer) {
-    <Entity>::query()
-        .filter(component::<Dead>())
-        .iter(ecs)
-        .for_each(|entity| cmd.remove(*entity));
-}
-
-#[system]
-#[read_component(Hero)]
-pub fn endgame(ecs: &mut SubWorld, #[resource] status: &mut GameStatus) {
-    let cnt = <Entity>::query()
-        .filter(component::<Defeat>())
-        .iter(ecs)
-        .count();
-    if cnt == 1 {
-        *status = GameStatus::Lost;
-    }
-
-    let cnt = <Entity>::query()
-        .filter(component::<Victory>())
-        .iter(ecs)
-        .count();
-    if cnt == 1 {
-        *status = GameStatus::Won;
-    }
 }

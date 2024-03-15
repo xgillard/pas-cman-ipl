@@ -46,7 +46,7 @@ impl State {
         Self { ecs, resources, running, won, lost, map_file: String::new() }
     }
 
-    fn process_message(ecs: &mut World, resources: &Resources, msg: pascman_protocol::Message) {
+    fn process_message(ecs: &mut World, resources: &Resources, msg: pascman_protocol::Message, status: &mut GameStatus) {
         unsafe {
             match msg.msgt {
                 MessageType::SPAWN => {
@@ -88,6 +88,34 @@ impl State {
                             entry.add_component(IntendsToMove(pos));
                         }
                     }
+                },
+                MessageType::EAT_FOOD => {
+                    let food = msg.eat_food.food;
+                    let entity = <(Entity, &Id)>::query()
+                        .iter(ecs)
+                        .find(|(_entity, id)| id.0 == food)
+                        .map(|(entity, _)| *entity);
+
+                    if let Some(entity) = entity {
+                        ecs.remove(entity);
+                    }
+                },
+                MessageType::KILL_VICTIM => {
+                    let victim = msg.kill_victim.killed;
+                    let entity = <(Entity, &Id)>::query()
+                        .iter(ecs)
+                        .find(|(_entity, id)| id.0 == victim)
+                        .map(|(entity, _)| *entity);
+
+                    if let Some(entity) = entity {
+                        ecs.remove(entity);
+                    }
+                },
+                MessageType::DEFEAT => {
+                    *status = GameStatus::Lost;
+                },
+                MessageType::VICTORY => {
+                    *status = GameStatus::Won;
                 }
             }
         }
@@ -106,12 +134,21 @@ impl GameState for State {
         ctx.cls();
         ctx.set_all_alpha(0.0, 0.0); // by default the message console is transparent
 
+        // this keeps track of the key that has potentially been pressed and saves
+        // it as a resource in the game world.
+        // note: 
+        // Any two resources with the same type will be replaced by one another
+        // in the ecs. There is thus no need to think of duplicates in this context
+        self.resources.insert(ctx.key);
+        
         { // fetch messages
             let resources = &self.resources;
             let mut rx = resources.get_mut::<Receiver<pascman_protocol::Message>>();
             let rx = rx.as_deref_mut().unwrap();
+            let mut status = resources.get_mut::<GameStatus>();
+            let status = status.as_deref_mut().unwrap();
             while let Ok(msg) = rx.try_recv() {
-                Self::process_message(&mut self.ecs, resources, msg);
+                Self::process_message(&mut self.ecs, resources, msg, status);
             }
         }
 

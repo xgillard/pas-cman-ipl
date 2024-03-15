@@ -132,7 +132,7 @@ int main(int argc, const char const* const* argv) {
     int tour_len     = 10;
     int tour_villain = 0;
     int tour_hero    = 4;
-    while(1) {
+    for(int i = 0; i < 30; i++) {
         usleep(250000);
         move_item(id_hero,    tour[tour_hero]);
         move_item(id_villain, tour[tour_villain]);
@@ -141,6 +141,15 @@ int main(int argc, const char const* const* argv) {
         tour_villain = (tour_villain+1)% tour_len;
         fflush(stdout);
     }
+
+    // apres 3 tours, on va afficher un victoire
+    union Message msg = {.victory = {.msgt = VICTORY }};
+    size_t nb_ecrit = fwrite(&msg, sizeof(union Message), 1, stdout);
+    if (nb_ecrit != 1) {
+        perror("je n'ai pas su écrire mon mouvement");
+        exit(1);
+    }
+    fflush(stdout);
 
     return 0;
 }

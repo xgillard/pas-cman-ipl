@@ -46,6 +46,14 @@ enum MessageType {
     SPAWN = 1,
     /// To indicate that a given item moves on the map
     MOVEMENT = 2,
+    /// To indicate that someone ate some food
+    EAT_FOOD = 3,
+    /// To indicate that someone killed someone else
+    KILL_VICTIM = 4,
+    /// To indiacate that the user won the game
+    VICTORY = 5,
+    /// To indicate that user lost the game
+    DEFEAT = 6,
 };
 
 /// Spawn est le message qui sert à introduire un item dans le jeu.
@@ -76,10 +84,44 @@ struct Movement {
     struct Position pos;
 };
 
+
+/// Indique que le qqn a mangé de la nourriture
+struct EatFood {
+    /// Ce messagetype devra toujours avoir la valeur EAT_FOOD
+    enum MessageType msgt;
+    uint32_t eater;
+    uint32_t food;
+};
+
+/// Indique que quelqu'un a tué qqn d'autre
+struct Kill {
+    /// Ce messagetype devra toujours avoir la valeur KILL_VICTIM
+    enum MessageType msgt;
+    uint32_t killer;
+    uint32_t killed;
+};
+
+/// Indique que le joueur a gagné
+struct Victory {
+    /// Ce messagetype devra toujours avoir la valeur VICTORY
+    enum MessageType msgt;
+};
+
+/// Indique que le joueur a perdu
+struct Defeat {
+    /// Ce messagetype devra toujours avoir la valeur DEFEAT
+    enum MessageType msgt;
+};
+
+
 /// Cette union encapsule tous les messages que vous pourriez vouloir envoyer à l'interface
 /// graphique de votre jeu depuis votre programme.
 union Message {
     enum MessageType msgt;
     struct Spawn spawn;
     struct Movement movement;
+    struct EatFood eat_food;
+    struct Kill kill_victim;
+    struct Victory victory;
+    struct Defeat defeat;
 };
