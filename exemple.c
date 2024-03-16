@@ -71,6 +71,7 @@ void load_map(uint32_t *res) {
         // charactere pour voir creer les messages nécessaires à dessiner la map. 
         // - Lorsqu'on rencontrera un caractere '#' on ajoutera un mur
         // - Lorsqu'on rencontrera un caractere '.' on ajoutera un tuile de sol et de la nourriture
+        // - Lorsqu'on rencontrera un caractere '*' on ajoutera un powerup (type spécial de nourriture dont vous n'avez besoin que si vous faites le bonus)
         // - Lorsqu'on rencontrera un caractere ' ' on ajoutera uniquement une tuile de sol.
         // - Lorsqu'on rencontrera un caractere '@' on injectera le heros
         // - Lorsqu'on rencontrera un caractere '!' on ajoutera un méchant
@@ -82,6 +83,11 @@ void load_map(uint32_t *res) {
             case '.':
                 spawn_item(id++, x, y, FLOOR);
                 spawn_item(id++, x, y, FOOD);
+                x++;
+                break;
+             case '*':
+                spawn_item(id++, x, y, FLOOR);
+                spawn_item(id++, x, y, POWERUP);
                 x++;
                 break;
             case ' ':
@@ -132,7 +138,8 @@ int main(int argc, const char const* const* argv) {
     int tour_len     = 10;
     int tour_villain = 0;
     int tour_hero    = 4;
-    for(int i = 0; i < 30; i++) {
+    int nb_tours     = 10;
+    for(int i = 0; i < nb_tours * 10; i++) {
         usleep(250000);
         move_item(id_hero,    tour[tour_hero]);
         move_item(id_villain, tour[tour_villain]);

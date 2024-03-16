@@ -58,6 +58,13 @@ impl Position {
 #[derive(Debug, Clone, Copy)]
 pub struct Food(pub char);
 
+/// This is a magic powerup. It can also be eated by the hero just like
+/// the regular food. However, whenever the hero eats a powerup, all
+/// the villains are made edible for a short (a few seconds) period of
+/// time.
+#[derive(Debug, Clone, Copy)]
+pub struct Powerup;
+
 #[derive(Debug, Clone, Copy)]
 pub enum Direction {
     Down = 0,

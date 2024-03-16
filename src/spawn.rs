@@ -38,3 +38,11 @@ pub fn spawn_seed(ecs : &mut World, id: u32, pos : Position) {
         pos,
     ));
 }
+pub fn spawn_powerup(ecs : &mut World, id: u32, pos : Position) {
+    ecs.push((
+        Id(id),
+        Food('*'),
+        Powerup,
+        pos,
+    ));
+}

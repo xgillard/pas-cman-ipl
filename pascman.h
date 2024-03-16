@@ -37,7 +37,8 @@ enum Item {
     FLOOR    = 2, // du sol - type de tuile sur lesquelles on peut marcher sur la carte
     FOOD     = 3, // de la nourriture - les resources que le hero doit collecter pour gagner
     VILLAIN  = 4, // un méchant qui veut tuer le heros
-    HERO     = 5  // le héros qui veut manger toute la nourriture
+    HERO     = 5, // le héros qui veut manger toute la nourriture
+    POWERUP  = 6  // un power up (uniquement nécessaire si vous voulez faire le bonus)
 };
 
 /// Le type de message qui est envoyé depuis l'extérieur à notre interface de jeu

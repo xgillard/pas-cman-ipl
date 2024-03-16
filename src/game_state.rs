@@ -67,6 +67,9 @@ impl State {
                         Item::FOOD    => {
                             spawn_seed(ecs, spawn.id, Position { x: spawn.pos.x as usize, y: spawn.pos.y as usize});
                         },
+                        Item::POWERUP => {
+                            spawn_powerup(ecs, spawn.id, Position { x: spawn.pos.x as usize, y: spawn.pos.y as usize});
+                        },
                         Item::HERO    => {
                             spawn_hero(ecs, spawn.id, Position { x: spawn.pos.x as usize, y: spawn.pos.y as usize});
                         },
