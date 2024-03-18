@@ -114,6 +114,25 @@ void load_map(uint32_t *res) {
     }
 }
 
+/* Cette fonction ecrit le message 'special mode' pour indiquer que l'entité 'id' 
+ * entre ou sort du mode spécial.
+ */
+void special_mode(uint32_t id, bool special) {
+    union Message msg;
+    struct SpecialMode mode = {
+        .msgt    = SPECIAL_MODE,
+        .id      = id,
+        .active  = special
+    };
+    msg.special  = mode;
+
+    size_t nb_ecrit = fwrite(&msg, sizeof(union Message), 1, stdout);
+    if (nb_ecrit != 1) {
+        perror("je n'ai pas su écrire mon special mode");
+        exit(1);
+    }
+}
+
 int main(int argc, const char const* const* argv) {
     uint32_t hero_villain[2];
     load_map(hero_villain);
@@ -139,17 +158,30 @@ int main(int argc, const char const* const* argv) {
     int tour_villain = 0;
     int tour_hero    = 4;
     int nb_tours     = 10;
+
+    bool special     = false;
     for(int i = 0; i < nb_tours * 10; i++) {
         usleep(250000);
         move_item(id_hero,    tour[tour_hero]);
         move_item(id_villain, tour[tour_villain]);
+
+        // juste pour l'illustration, on montre ce que ca donne de faire
+        // passer un héro et un méchant dans le mode spécial pendant la 
+        // moitié du tour. Dans l'implémentation du bonus, faire passer
+        // un héros et les méchants en mode spécial nécessiterait que le
+        // héros ait d'abord mangé un powerup.
+        if (i % 5 == 0) {
+            special = !special;
+            special_mode(id_hero,    special);
+            special_mode(id_villain, special);
+        }
       
         tour_hero    = (tour_hero + 1) % tour_len;
         tour_villain = (tour_villain+1)% tour_len;
         fflush(stdout);
     }
 
-    // apres 3 tours, on va afficher un victoire
+    // apres 3 tours, on va afficher un victoire (meme si personne n'a gagné)
     union Message msg = {.victory = {.msgt = VICTORY }};
     size_t nb_ecrit = fwrite(&msg, sizeof(union Message), 1, stdout);
     if (nb_ecrit != 1) {

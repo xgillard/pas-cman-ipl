@@ -18,7 +18,7 @@ pub fn spawn_hero (ecs : &mut World, id: u32, pos : Position) {
         Hero,
         pos,
         Direction::Down,
-        ColorPair::new(WHITE, BLACK),
+        SpecialMode(false),
     ));
 }
 pub fn spawn_villain(ecs : &mut World, id: u32, pos : Position) {
@@ -28,7 +28,7 @@ pub fn spawn_villain(ecs : &mut World, id: u32, pos : Position) {
         Villain,
         pos,
         Direction::Down,
-        ColorPair::new(WHITE, BLACK),
+        SpecialMode(false),
     ));
 }
 pub fn spawn_seed(ecs : &mut World, id: u32, pos : Position) {

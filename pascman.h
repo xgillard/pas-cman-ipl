@@ -5,6 +5,7 @@
 //! Date:    March 2023
 //! Licence: MIT 
 
+#include <stdbool.h>
 #include <stdint.h>
 
 /// Par définition, on considere que la map qu'on crée dans notre jeu a une
@@ -55,6 +56,9 @@ enum MessageType {
     VICTORY = 5,
     /// To indicate that user lost the game
     DEFEAT = 6,
+    /// To indicate that a hero or villain is entering/leaving the special mode
+    /// (ONLY USEFUL IF YOU IMPLEMENT THE BONUS)
+    SPECIAL_MODE = 7,
 };
 
 /// Spawn est le message qui sert à introduire un item dans le jeu.
@@ -114,6 +118,26 @@ struct Defeat {
     enum MessageType msgt;
 };
 
+/// **********************************************************************
+/// Ce message n'est utile que si et seulement si vous voulez implémenter
+/// le bonus
+/// **********************************************************************
+/// 
+/// Active ou désactive le mode 'spécial' (super pouvoir du ou des héros).
+/// 
+/// Activer le mode spécial pour un héros signifie que ce heros pourra manger
+/// les méchants qu'il rencontre. Activer le mode spécial pour un méchant 
+/// indique simplement qu'il pourra se faire manger par un héros ayant des 
+/// super pouvoirs. Concrètement, le seul effet de ce message est de modifier
+/// l'aspect visuel du monstre ou du héros de sorte que le joueur sache qu'il
+/// peut manger des méchants ou se faire manger par un héros.
+struct SpecialMode {
+    /// Ce messagetype devra toujours avoir la valeur SPECIAL_MODE
+    enum MessageType msgt;
+    uint32_t id;
+    bool active;
+};
+
 
 /// Cette union encapsule tous les messages que vous pourriez vouloir envoyer à l'interface
 /// graphique de votre jeu depuis votre programme.
@@ -125,4 +149,5 @@ union Message {
     struct Kill kill_victim;
     struct Victory victory;
     struct Defeat defeat;
+    struct SpecialMode special;
 };

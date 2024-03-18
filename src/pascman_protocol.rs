@@ -44,10 +44,17 @@ pub enum MessageType {
     SPAWN = 1,
     /// To indicate that a given item moves on the map
     MOVEMENT = 2,
+    /// To indicate that someone ate some food
     EAT_FOOD = 3,
+    /// To indicate that someone killed someone else
     KILL_VICTIM = 4,
+     /// To indiacate that the user won the game
     VICTORY = 5,
+    /// To indicate that user lost the game
     DEFEAT = 6,
+    /// To indicate that a hero or villain is entering/leaving the special mode
+    /// (ONLY USEFUL IF YOU IMPLEMENT THE BONUS)
+    SPECIAL_MODE = 7,
 }
 
 /// Spawn est le message qui sert à introduire un item dans le jeu.
@@ -120,6 +127,29 @@ pub struct Kill {
     pub killed: u32,
 }
 
+
+/// **********************************************************************
+/// Ce message n'est utile que si et seulement si vous voulez implémenter
+/// le bonus
+/// **********************************************************************
+/// 
+/// Active ou désactive le mode 'spécial' (super pouvoir du ou des héros).
+/// 
+/// Activer le mode spécial pour un héros signifie que ce heros pourra manger
+/// les méchants qu'il rencontre. Activer le mode spécial pour un méchant 
+/// indique simplement qu'il pourra se faire manger par un héros ayant des 
+/// super pouvoirs. Concrètement, le seul effet de ce message est de modifier
+/// l'aspect visuel du monstre ou du héros de sorte que le joueur sache qu'il
+/// peut manger des méchants ou se faire manger par un héros.
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+pub struct SpecialMode {
+    /// Ce messagetype devra toujours avoir la valeur SPECIAL_MODE
+    pub msgt: MessageType,
+    pub id: u32,
+    pub active: bool,
+}
+
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub union Message {
@@ -130,4 +160,5 @@ pub union Message {
     pub kill_victim: Kill,
     pub victory: Victory,
     pub defeat: Defeat,
+    pub special: SpecialMode,
 } 

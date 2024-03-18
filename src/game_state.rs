@@ -114,6 +114,20 @@ impl State {
                         ecs.remove(entity);
                     }
                 },
+                MessageType::SPECIAL_MODE => {
+                    let target_id = msg.special.id;
+                    let mode = msg.special.active;
+
+                    let entity = <(Entity, &Id)>::query()
+                        .iter(ecs)
+                        .find(|(_entity, id)| id.0 == target_id)
+                        .map(|(entity, _)| *entity);
+                    if let Some(entity) = entity {
+                        if let Some(mut entry) = ecs.entry(entity) {
+                            entry.add_component(SpecialMode(mode));
+                        }
+                    }
+                },
                 MessageType::DEFEAT => {
                     *status = GameStatus::Lost;
                 },

@@ -6,7 +6,7 @@
 //! Date:    March 2023
 //! Licence: MIT 
 
-use bracket_lib::terminal::Point;
+use bracket_lib::{color::{ColorPair, BLACK, RED, WHITE}, terminal::Point};
 
 /// This component indicates that the entity is a character 
 /// (they should be rendered on top of both the map and the food)
@@ -87,4 +87,18 @@ pub struct EatFood{
 pub struct Kill {
     pub killer: u32,
     pub killed: u32,
+}
+
+
+#[derive(Debug, Clone, Copy)]
+pub struct SpecialMode(pub bool);
+
+impl SpecialMode {
+    pub fn color_pair(self) -> ColorPair {
+        if self.0 {
+            ColorPair::new(RED, BLACK)
+        } else {
+            ColorPair::new(WHITE, BLACK)
+        }
+    }
 }
