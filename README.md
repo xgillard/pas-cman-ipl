@@ -39,7 +39,7 @@ Afin de compiler le programme sur votre machine linux (ou WSL sur windows), vous
 les librairies suivantes (si vous utilisez une distribution desktop, il y a de fortes chances que tous ces paquets soient 
 déjà préinstallés):
 ```
-sudo install cmake pkg-config libfontconfig-dev librust-servo-fontconfig-sys-dev libwayland-bin libxrandr2 libxi6 libx11-xcb libgl1
+sudo apt install cmake pkg-config libfontconfig-dev librust-servo-fontconfig-sys-dev libwayland-bin libxrandr2 libxi6 libx11-xcb1 libgl1 libxcursor1
 ```
 
 ## Etape 2: Se familiariser avec le protocole du jeu
