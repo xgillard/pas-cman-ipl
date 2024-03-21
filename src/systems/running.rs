@@ -17,6 +17,8 @@ pub fn run_game_schedule() -> Schedule {
         .flush()
         .add_system(render_food_system())
         .add_system(render_characters_system())
+        .flush()
+        .add_system(remove_gone_system())
         .build()
 }
 
@@ -110,5 +112,16 @@ pub fn move_to_next_place(ecs: &mut SubWorld, cmd: &mut CommandBuffer) {
             }
             
             *position  = intention.0;
+        });
+}
+
+#[system]
+#[read_component(LeftGame)]
+pub fn remove_gone(ecs: &mut SubWorld, cmd: &mut CommandBuffer) {
+    <Entity>::query()
+        .filter(component::<LeftGame>())
+        .iter(ecs)
+        .for_each(|entity| {
+            cmd.remove(*entity)
         });
 }

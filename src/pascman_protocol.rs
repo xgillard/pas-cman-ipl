@@ -55,6 +55,8 @@ pub enum MessageType {
     /// To indicate that a hero or villain is entering/leaving the special mode
     /// (ONLY USEFUL IF YOU IMPLEMENT THE BONUS)
     SPECIAL_MODE = 7,
+    /// To indicate that a player left the game (without being purposedly killed by somone)
+    LEFT_GAME = 8,
 }
 
 /// Spawn est le message qui sert à introduire un item dans le jeu.
@@ -127,6 +129,15 @@ pub struct Kill {
     pub killed: u32,
 }
 
+/// Indique que quelqu'un a quitté le jeu sans forcément avoir été tué (déconnection)
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+pub struct LeftGame {
+    /// Ce messagetype devra toujours avoir la valeur LEFT_GAME
+    pub msgt: MessageType,
+    /// Identitfiant du joueur qui a quitté le jeu
+    pub id: u32,
+}
 
 /// **********************************************************************
 /// Ce message n'est utile que si et seulement si vous voulez implémenter
@@ -161,4 +172,5 @@ pub union Message {
     pub victory: Victory,
     pub defeat: Defeat,
     pub special: SpecialMode,
+    pub left_game: LeftGame,
 } 

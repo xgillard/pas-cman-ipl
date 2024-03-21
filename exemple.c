@@ -157,7 +157,7 @@ int main(int argc, const char const* const* argv) {
     int tour_len     = 10;
     int tour_villain = 0;
     int tour_hero    = 4;
-    int nb_tours     = 10;
+    int nb_tours     = 3;
 
     bool special     = false;
     for(int i = 0; i < nb_tours * 10; i++) {
@@ -181,11 +181,23 @@ int main(int argc, const char const* const* argv) {
         fflush(stdout);
     }
 
+   
+    union Message left_game = {.left_game = {.msgt = LEFT_GAME, .id = id_villain }};
+    size_t nb_ecrit = fwrite(&left_game, sizeof(union Message), 1, stdout);
+    if (nb_ecrit != 1) {
+        perror("je n'ai pas su écrire le fait que le mechant a quitté le jeu");
+        exit(1);
+    }
+    fflush(stdout);
+
+    // on attend un peu histoire de pouvoir voir que le joueur est bien parti pour du vrai 
+    usleep(1000000);
+
     // apres 3 tours, on va afficher un victoire (meme si personne n'a gagné)
     union Message msg = {.victory = {.msgt = VICTORY }};
-    size_t nb_ecrit = fwrite(&msg, sizeof(union Message), 1, stdout);
+    nb_ecrit = fwrite(&msg, sizeof(union Message), 1, stdout);
     if (nb_ecrit != 1) {
-        perror("je n'ai pas su écrire mon mouvement");
+        perror("je n'ai pas su écrire ma victoire");
         exit(1);
     }
     fflush(stdout);

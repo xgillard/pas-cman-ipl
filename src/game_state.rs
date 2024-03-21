@@ -128,6 +128,19 @@ impl State {
                         }
                     }
                 },
+                MessageType::LEFT_GAME => {
+                    let target_id = msg.left_game.id;
+
+                    let entity = <(Entity, &Id)>::query()
+                        .iter(ecs)
+                        .find(|(_entity, id)| id.0 == target_id)
+                        .map(|(entity, _)| *entity);
+                    if let Some(entity) = entity {
+                        if let Some(mut entry) = ecs.entry(entity) {
+                            entry.add_component(LeftGame);
+                        }
+                    }
+                }
                 MessageType::DEFEAT => {
                     *status = GameStatus::Lost;
                 },
