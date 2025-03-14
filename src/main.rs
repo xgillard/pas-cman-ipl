@@ -1,7 +1,7 @@
 use std::{io::{stdin, Read}, thread};
 
 use legion::Schedule;
-use pas_cman_ipl::{main_loop, render_map_system, BResult, BTermBuilder, State};
+use pas_cman_ipl::{main_loop, render_map_system, BResult, BTermBuilder, InitHints, State};
 
 fn main() -> BResult<()> {
     let w = 30;
@@ -20,7 +20,11 @@ fn main() -> BResult<()> {
         }
     });
 
+    let mut platform_hints = InitHints::new();
+    platform_hints.srgb = false;
+
     let context = BTermBuilder::new()
+        .with_platform_specific(platform_hints)
         .with_title("pas cman")
         .with_dimensions(w, h)
         .with_fps_cap(30.0)
