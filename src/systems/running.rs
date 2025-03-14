@@ -70,19 +70,18 @@ pub fn render_food(ecs: &SubWorld) {
 #[system]
 #[read_component(Character)]
 #[read_component(Position)]
-#[read_component(SpecialMode)]
 #[read_component(Direction)]
 pub fn render_characters(ecs: &SubWorld) {
     let mut batch = DrawBatch::new();
     batch.target(2);
 
-    <(&Position, &Character, &Direction, &SpecialMode)>::query()
+    <(&Position, &Character, &Direction)>::query()
         .iter(ecs)
-        .filter(|(pos, _character, _direction, _specialmode)| pos.is_valid())
-        .for_each(|(pos, character, direction, specialmode)| {
+        .filter(|(pos, _character, _direction)| pos.is_valid())
+        .for_each(|(pos, character, direction)| {
             batch.set(
                 pos.into_point(),
-                specialmode.color_pair(),
+                ColorPair::new(WHITE, BLACK),
                 to_cp437(character.0[*direction as usize]),
             );
         });

@@ -23,16 +23,16 @@ pub struct Position {
 
 /// Un item est tout type d'élément qui peut exister sur le plateau de jeu.
 /// Au début du jeu, tous les items sont introduits à l'aide de messages 
-/// te type 'spawn'.
+/// de type 'spawn'.
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub enum Item {
-    WALL     = 1, // un mur - type de tuile qui constitue un obstacle sur la carte  
-    FLOOR    = 2, // du sol - type de tuile sur lesquelles on peut marcher sur la carte
-    FOOD     = 3, // de la nourriture - les resources que le hero doit collecter pour gagner
-    VILLAIN  = 4, // un méchant qui veut tuer le heros
-    HERO     = 5, // le héros qui veut manger toute la nourriture
-    POWERUP  = 6  // un power up (uniquement nécessaire si vous voulez faire le bonus)
+    WALL      = 1, // un mur - type de tuile qui constitue un obstacle sur la carte  
+    FLOOR     = 2, // du sol - type de tuile sur lesquelles on peut marcher sur la carte
+    FOOD      = 3, // de la nourriture - les resources que les joueures doivent collecter pour gagner
+    SUPERFOOD = 4, // de la superfood qui rapporte plus de points que la nourriture normale
+    PLAYER1   = 5, // le joueur 1
+    PLAYER2   = 6, // le joueur 1
 }
 
 /// Le type de message qui est envoyé depuis l'extérieur à notre interface de jeu
@@ -46,15 +46,12 @@ pub enum MessageType {
     MOVEMENT = 2,
     /// To indicate that someone ate some food
     EAT_FOOD = 3,
-    /// To indicate that someone killed someone else
-    KILL_VICTIM = 4,
+    /// To indicate that two players were killed because they collided into one another
+    COLLISION = 4,
      /// To indiacate that the user won the game
     VICTORY = 5,
     /// To indicate that user lost the game
     DEFEAT = 6,
-    /// To indicate that a hero or villain is entering/leaving the special mode
-    /// (ONLY USEFUL IF YOU IMPLEMENT THE BONUS)
-    SPECIAL_MODE = 7,
     /// To indicate that a player left the game (without being purposedly killed by somone)
     LEFT_GAME = 8,
 }
@@ -119,14 +116,14 @@ pub struct EatFood {
     pub food: u32,
 }
 
-/// Indique que quelqu'un a tué qqn d'autre
+/// Indique que deux joueurs sont morts parce qu'ils sont entrés en collision
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
-pub struct Kill {
-    /// Ce messagetype devra toujours avoir la valeur KILL_VICTIM
+pub struct Collision {
+    /// Ce messagetype devra toujours avoir la valeur COLLISION
     pub msgt: MessageType,
-    pub killer: u32,
-    pub killed: u32,
+    pub player_a: u32,
+    pub player_b: u32,
 }
 
 /// Indique que quelqu'un a quitté le jeu sans forcément avoir été tué (déconnection)
@@ -139,27 +136,6 @@ pub struct LeftGame {
     pub id: u32,
 }
 
-/// **********************************************************************
-/// Ce message n'est utile que si et seulement si vous voulez implémenter
-/// le bonus
-/// **********************************************************************
-/// 
-/// Active ou désactive le mode 'spécial' (super pouvoir du ou des héros).
-/// 
-/// Activer le mode spécial pour un héros signifie que ce heros pourra manger
-/// les méchants qu'il rencontre. Activer le mode spécial pour un méchant 
-/// indique simplement qu'il pourra se faire manger par un héros ayant des 
-/// super pouvoirs. Concrètement, le seul effet de ce message est de modifier
-/// l'aspect visuel du monstre ou du héros de sorte que le joueur sache qu'il
-/// peut manger des méchants ou se faire manger par un héros.
-#[repr(C)]
-#[derive(Debug, Clone, Copy)]
-pub struct SpecialMode {
-    /// Ce messagetype devra toujours avoir la valeur SPECIAL_MODE
-    pub msgt: MessageType,
-    pub id: u32,
-    pub active: bool,
-}
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -168,9 +144,8 @@ pub union Message {
     pub spawn: Spawn,
     pub movement: Movement,
     pub eat_food: EatFood,
-    pub kill_victim: Kill,
+    pub collision: Collision,
     pub victory: Victory,
     pub defeat: Defeat,
-    pub special: SpecialMode,
     pub left_game: LeftGame,
 } 

@@ -20,7 +20,7 @@
 /// soit un mur, soit du sol. Il n'est possible de placer de la nourriture que
 /// sur les cases de qui sont du sol. Il n'est aussi possible de se déplacer 
 /// que sur des cases qui sont du sol.
-#define MAP_SIZE 30*20
+#define MAP_SIZE (30*20)
 
 /// Une position représente la position d'un item sur la map. Il s'agit donc 
 /// d'une position qui peut aller de {x: 0, y: 0} (coin supérieur gauche) à
@@ -32,14 +32,14 @@ struct Position {
 
 /// Un item est tout type d'élément qui peut exister sur le plateau de jeu.
 /// Au début du jeu, tous les items sont introduits à l'aide de messages 
-/// te type 'spawn'.
+/// de type 'spawn'.
 enum Item {
-    WALL     = 1, // un mur - type de tuile qui constitue un obstacle sur la carte  
-    FLOOR    = 2, // du sol - type de tuile sur lesquelles on peut marcher sur la carte
-    FOOD     = 3, // de la nourriture - les resources que le hero doit collecter pour gagner
-    VILLAIN  = 4, // un méchant qui veut tuer le heros
-    HERO     = 5, // le héros qui veut manger toute la nourriture
-    POWERUP  = 6  // un power up (uniquement nécessaire si vous voulez faire le bonus)
+    WALL      = 1, // un mur - type de tuile qui constitue un obstacle sur la carte  
+    FLOOR     = 2, // du sol - type de tuile sur lesquelles on peut marcher sur la carte
+    FOOD      = 3, // de la nourriture - les resources que les joueures doivent collecter pour gagner
+    SUPERFOOD = 4, // de la superfood qui rapporte plus de points que la nourriture normale
+    PLAYER1   = 5, // le joueur 1
+    PLAYER2   = 6, // le joueur 1
 };
 
 /// Le type de message qui est envoyé depuis l'extérieur à notre interface de jeu
@@ -50,15 +50,12 @@ enum MessageType {
     MOVEMENT = 2,
     /// To indicate that someone ate some food
     EAT_FOOD = 3,
-    /// To indicate that someone killed someone else
-    KILL_VICTIM = 4,
-    /// To indiacate that the user won the game
+    /// To indicate that two players were killed because they collided into one another
+    COLLISION = 4,
+     /// To indiacate that the user won the game
     VICTORY = 5,
     /// To indicate that user lost the game
     DEFEAT = 6,
-    /// To indicate that a hero or villain is entering/leaving the special mode
-    /// (ONLY USEFUL IF YOU IMPLEMENT THE BONUS)
-    SPECIAL_MODE = 7,
     /// To indicate that a player left the game (without being purposedly killed by somone)
     LEFT_GAME = 8,
 };
@@ -101,11 +98,11 @@ struct EatFood {
 };
 
 /// Indique que quelqu'un a tué qqn d'autre
-struct Kill {
-    /// Ce messagetype devra toujours avoir la valeur KILL_VICTIM
+struct Collision {
+    /// Ce messagetype devra toujours avoir la valeur COLLISION
     enum MessageType msgt;
-    uint32_t killer;
-    uint32_t killed;
+    uint32_t player_a;
+    uint32_t player_b;
 };
 
 /// Indique que quelqu'un a quitté le jeu sans forcément avoir été tué (déconnection)
@@ -128,27 +125,6 @@ struct Defeat {
     enum MessageType msgt;
 };
 
-/// **********************************************************************
-/// Ce message n'est utile que si et seulement si vous voulez implémenter
-/// le bonus
-/// **********************************************************************
-/// 
-/// Active ou désactive le mode 'spécial' (super pouvoir du ou des héros).
-/// 
-/// Activer le mode spécial pour un héros signifie que ce heros pourra manger
-/// les méchants qu'il rencontre. Activer le mode spécial pour un méchant 
-/// indique simplement qu'il pourra se faire manger par un héros ayant des 
-/// super pouvoirs. Concrètement, le seul effet de ce message est de modifier
-/// l'aspect visuel du monstre ou du héros de sorte que le joueur sache qu'il
-/// peut manger des méchants ou se faire manger par un héros.
-struct SpecialMode {
-    /// Ce messagetype devra toujours avoir la valeur SPECIAL_MODE
-    enum MessageType msgt;
-    uint32_t id;
-    bool active;
-};
-
-
 /// Cette union encapsule tous les messages que vous pourriez vouloir envoyer à l'interface
 /// graphique de votre jeu depuis votre programme.
 union Message {
@@ -156,9 +132,8 @@ union Message {
     struct Spawn spawn;
     struct Movement movement;
     struct EatFood eat_food;
-    struct Kill kill_victim;
+    struct Collision collision;
     struct Victory victory;
     struct Defeat defeat;
-    struct SpecialMode special;
     struct LeftGame left_game;
 };

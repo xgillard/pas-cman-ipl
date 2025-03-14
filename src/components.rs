@@ -6,7 +6,7 @@
 //! Date:    March 2023
 //! Licence: MIT 
 
-use bracket_lib::{color::{ColorPair, BLACK, RED, WHITE}, terminal::Point};
+use bracket_lib::terminal::Point;
 
 /// This component indicates that the entity is a character 
 /// (they should be rendered on top of both the map and the food)
@@ -63,7 +63,7 @@ pub struct Food(pub char);
 /// the villains are made edible for a short (a few seconds) period of
 /// time.
 #[derive(Debug, Clone, Copy)]
-pub struct Powerup;
+pub struct Superfood;
 
 #[derive(Debug, Clone, Copy)]
 pub enum Direction {
@@ -73,7 +73,7 @@ pub enum Direction {
     Up   = 3
 }
 
-/// 
+/// To tell that a given entity intends to move somewhere in the game.
 #[derive(Debug, Clone, Copy)]
 pub struct IntendsToMove(pub Position);
 
@@ -87,20 +87,6 @@ pub struct EatFood{
 pub struct Kill {
     pub killer: u32,
     pub killed: u32,
-}
-
-
-#[derive(Debug, Clone, Copy)]
-pub struct SpecialMode(pub bool);
-
-impl SpecialMode {
-    pub fn color_pair(self) -> ColorPair {
-        if self.0 {
-            ColorPair::new(RED, BLACK)
-        } else {
-            ColorPair::new(WHITE, BLACK)
-        }
-    }
 }
 
 #[derive(Debug, Clone, Copy)]

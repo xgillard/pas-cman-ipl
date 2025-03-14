@@ -67,14 +67,14 @@ impl State {
                         Item::FOOD    => {
                             spawn_seed(ecs, spawn.id, Position { x: spawn.pos.x as usize, y: spawn.pos.y as usize});
                         },
-                        Item::POWERUP => {
-                            spawn_powerup(ecs, spawn.id, Position { x: spawn.pos.x as usize, y: spawn.pos.y as usize});
+                        Item::SUPERFOOD => {
+                            spawn_superfood(ecs, spawn.id, Position { x: spawn.pos.x as usize, y: spawn.pos.y as usize});
                         },
-                        Item::HERO    => {
-                            spawn_hero(ecs, spawn.id, Position { x: spawn.pos.x as usize, y: spawn.pos.y as usize});
+                        Item::PLAYER1   => {
+                            spawn_player1(ecs, spawn.id, Position { x: spawn.pos.x as usize, y: spawn.pos.y as usize});
                         },
-                        Item::VILLAIN => {
-                            spawn_villain(ecs, spawn.id, Position { x: spawn.pos.x as usize, y: spawn.pos.y as usize});
+                        Item::PLAYER2   => {
+                            spawn_player2(ecs, spawn.id, Position { x: spawn.pos.x as usize, y: spawn.pos.y as usize});
                         },
                     }
                 },
@@ -103,29 +103,15 @@ impl State {
                         ecs.remove(entity);
                     }
                 },
-                MessageType::KILL_VICTIM => {
-                    let victim = msg.kill_victim.killed;
-                    let entity = <(Entity, &Id)>::query()
+                MessageType::COLLISION => {
+                    let remove_list = <(Entity, &Id)>::query()
                         .iter(ecs)
-                        .find(|(_entity, id)| id.0 == victim)
-                        .map(|(entity, _)| *entity);
-
-                    if let Some(entity) = entity {
+                        .filter(|(_entity, id)| id.0 == msg.collision.player_a || id.0 == msg.collision.player_b)
+                        .map(|(entity, _)| *entity)
+                        .collect::<Vec<Entity>>();
+                    
+                    for entity in remove_list {
                         ecs.remove(entity);
-                    }
-                },
-                MessageType::SPECIAL_MODE => {
-                    let target_id = msg.special.id;
-                    let mode = msg.special.active;
-
-                    let entity = <(Entity, &Id)>::query()
-                        .iter(ecs)
-                        .find(|(_entity, id)| id.0 == target_id)
-                        .map(|(entity, _)| *entity);
-                    if let Some(entity) = entity {
-                        if let Some(mut entry) = ecs.entry(entity) {
-                            entry.add_component(SpecialMode(mode));
-                        }
                     }
                 },
                 MessageType::LEFT_GAME => {
