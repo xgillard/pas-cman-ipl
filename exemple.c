@@ -251,9 +251,10 @@ int main(int argc, const char const* const* argv) {
 
     // on attend un peu avant de commencer notre animation, parce que 
     // parfois le systeme prend un peu de temps pour afficher l'interface.
-    usleep(3000000);
+    usleep(2000000);
+
     for(int i = 0; i < nb_tours * 10; i++) {
-        usleep(250000);
+        usleep(500000);
         
         // on écrit les messages de mouvement sur stdout pour que 
         // l'interface graphique sache quoi faire.
