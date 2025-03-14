@@ -22,6 +22,18 @@
 /// que sur des cases qui sont du sol.
 #define MAP_SIZE (30*20)
 
+/// Lorsqu'un utilisateur utilisera les flèches de son clavier au sein de
+/// l'interface graphique, celle-ci écrira une direction (haut, bas, gauche, droite)
+/// sur la sortie standard. De cette façon, vous pourrez toujours savoir ce que
+/// l'utilisateur voulait faire meme si ce n'est pas vous qui avez programmé 
+/// les interactions clavier.
+enum Direction {
+    DOWN  = 0,
+    RIGHT = 1,
+    LEFT  = 2,
+    UP    = 3
+};
+
 /// Une position représente la position d'un item sur la map. Il s'agit donc 
 /// d'une position qui peut aller de {x: 0, y: 0} (coin supérieur gauche) à
 /// {x: 29, y: 19} (coin inférieur droit).

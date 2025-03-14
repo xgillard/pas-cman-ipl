@@ -5,12 +5,15 @@
 //! Date:    March 2023
 //! Licence: MIT 
 
+use std::io::{self, Write};
+
 use bracket_lib::{color::{ColorPair, BLACK, WHITE}, terminal::{to_cp437, DrawBatch, Point}};
 use crate::*;
 
 /// This function creates the ECS schedule which decides when a given system should be run
 pub fn run_game_schedule() -> Schedule {
     Schedule::builder()
+        .add_system(user_input_system())
         .add_system(render_map_system())
         .flush()
         .add_system(move_to_next_place_system())
@@ -20,6 +23,27 @@ pub fn run_game_schedule() -> Schedule {
         .flush()
         .add_system(remove_gone_system())
         .build()
+}
+
+fn _direction_to_stdout(direction: Direction) {
+    let mut stdout = io::stdout();
+
+    stdout.write_all(&[direction.into()]).expect("could not write to stdout");
+    stdout.flush().expect("could not flush stdout");
+}
+
+/// This system deals with the user input
+#[system]
+pub fn user_input(
+    #[resource] key: &Option<VirtualKeyCode>,
+) {
+    match key {
+        Some(VirtualKeyCode::Left)  => { _direction_to_stdout(Direction::Left);  },
+        Some(VirtualKeyCode::Right) => { _direction_to_stdout(Direction::Right); },
+        Some(VirtualKeyCode::Up)    => { _direction_to_stdout(Direction::Up);    },
+        Some(VirtualKeyCode::Down)  => { _direction_to_stdout(Direction::Down);  },
+        _                           => {/* do nothing */ }
+    }
 }
 
 /// This system renders the world map

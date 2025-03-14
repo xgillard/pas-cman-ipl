@@ -72,6 +72,16 @@ pub enum Direction {
     Left = 2,
     Up   = 3
 }
+impl Into<u8> for Direction {
+    fn into(self) -> u8 {
+        match self {
+            Self::Down => 0,
+            Self::Right=> 1,
+            Self::Left => 2,
+            Self::Up   => 3
+        }
+    }
+}
 
 /// To tell that a given entity intends to move somewhere in the game.
 #[derive(Debug, Clone, Copy)]
