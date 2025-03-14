@@ -22,6 +22,7 @@ fn main() -> BResult<()> {
 
     let mut platform_hints = InitHints::new();
     platform_hints.srgb = false;
+    platform_hints.hardware_acceleration = true;
 
     let context = BTermBuilder::new()
         .with_platform_specific(platform_hints)
