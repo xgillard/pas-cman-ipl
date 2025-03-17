@@ -8,6 +8,10 @@
 
 use bracket_lib::terminal::Point;
 
+/// Le joueur qui joue une partie.
+#[derive(Debug, Clone, Copy)]
+pub struct Player(pub u32);
+
 /// This component indicates that the entity is a character 
 /// (they should be rendered on top of both the map and the food)
 #[derive(Debug, Clone, Copy)]

@@ -17,8 +17,9 @@ use self::pascman_protocol::MessageType;
 #[derive(Debug, Clone, Copy)]
 pub enum GameStatus {
     NotStarted,
+    Registered,
     Running,
-    Over {winner: u32, loser: u32},
+    Over{winner: u32},
 }
 
 pub struct State {
@@ -37,27 +38,34 @@ impl State {
         let mut resources = Resources::default();
         let rng = RandomNumberGenerator::new();
         resources.insert(rng);
-        resources.insert(GameStatus::Running);
+        resources.insert(Player(0));
+        resources.insert(GameStatus::NotStarted);
         resources.insert(Map{width: 30, height: 20, tiles: vec![TileType::Floor;30*20] });
         resources.insert(channel);
         Self { ecs, resources, running, over, map_file: String::new() }
     }
 
-    fn process_message(ecs: &mut World, resources: &Resources, msg: pascman_protocol::Message, status: &mut GameStatus) {
+    fn process_message(
+            ecs: &mut World, 
+            map: &mut Map, 
+            status: &mut GameStatus, 
+            player: &mut Player,
+            msg: pascman_protocol::Message
+    ) {
         unsafe {
             match msg.msgt {
+                MessageType::REGISTRATION => {
+                    *player = Player(msg.registration.player);
+                    *status = GameStatus::Running;
+                },
                 MessageType::SPAWN => {
                     let spawn = msg.spawn;
                     match spawn.item {
                         Item::FLOOR   => {
-                            let mut map = resources.get_mut::<Map>();
-                            let map = map.as_deref_mut().unwrap();
                             let idx = map.point2d_to_index(Point::new(spawn.pos.x, spawn.pos.y));
                             map.tiles[idx] = TileType::Floor;
                         },
                         Item::WALL    => {
-                            let mut map = resources.get_mut::<Map>();
-                            let map = map.as_deref_mut().unwrap();
                             let idx = map.point2d_to_index(Point::new(spawn.pos.x, spawn.pos.y));
                             map.tiles[idx] = TileType::Wall;
                         },
@@ -102,8 +110,7 @@ impl State {
                 },
                 MessageType::GAME_OVER => {
                     let winner = msg.game_over.winner;
-                    let loser = msg.game_over.loser;
-                    *status = GameStatus::Over { winner, loser };
+                    *status = GameStatus::Over { winner };
                 }
             }
         }
@@ -130,25 +137,37 @@ impl GameState for State {
         self.resources.insert(ctx.key);
         
         { // fetch messages
+            let ecs = &mut self.ecs;
             let resources = &self.resources;
             let mut rx = resources.get_mut::<Receiver<pascman_protocol::Message>>();
             let rx = rx.as_deref_mut().unwrap();
+
+            let mut map = resources.get_mut::<Map>();
+            let map = map.as_deref_mut().unwrap();
+
             let mut status = resources.get_mut::<GameStatus>();
             let status = status.as_deref_mut().unwrap();
+
+            let mut player = resources.get_mut::<Player>();
+            let player = player.as_deref_mut().unwrap();
+
             while let Ok(msg) = rx.try_recv() {
-                Self::process_message(&mut self.ecs, resources, msg, status);
+                Self::process_message(ecs, map, status, player, msg);
             }
         }
 
         let status = self.resources.get::<GameStatus>().as_deref().copied().unwrap();
         match status {
             GameStatus::NotStarted => {
+                /* do nothing */
+            },
+            GameStatus::Registered => {
                 self.ecs.clear();
                 self.resources.insert(GameStatus::Running);
-            },
+            }
             GameStatus::Running => {
                 self.running.execute(&mut self.ecs, &mut self.resources)},
-            GameStatus::Over { winner: _, loser: _ } => 
+            GameStatus::Over { winner: _} => 
                 self.over.execute(&mut self.ecs, &mut self.resources),
         }
         // 

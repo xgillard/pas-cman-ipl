@@ -8,7 +8,7 @@
 
 use bracket_lib::prelude::*;
 use legion::{Schedule, system};
-use crate::{proceed_to_restart_system, GameStatus, Map};
+use crate::{proceed_to_restart_system, GameStatus, Map, Player};
 
 pub fn game_over_schedule() -> Schedule {
     Schedule::builder()
@@ -19,8 +19,14 @@ pub fn game_over_schedule() -> Schedule {
 
 
 #[system]
-pub fn render_gameover_screen(#[resource] map: &Map, #[resource] status: &GameStatus) {
-    if let &GameStatus::Over { winner, loser } = status {
+pub fn render_gameover_screen(
+    #[resource] map: &Map, 
+    #[resource] player: &Player,
+    #[resource] status: &GameStatus
+) {
+    if let &GameStatus::Over { winner } = status {
+        let me = player.0;
+
         let mut batch = DrawBatch::new();
         batch.target(3);
         batch.set_all_alpha(1.0, 1.0);
@@ -30,13 +36,13 @@ pub fn render_gameover_screen(#[resource] map: &Map, #[resource] status: &GameSt
         
         batch.draw_box(Rect::with_size(w/4, h/4, w/2, h/2), ColorPair::new(WHITE, BLACK));
 
-        
-        let won  = format!("Player {winner} won");
-        let lost = format!("Player {loser}  lost");
+        if me == winner {
+            batch.print_color_centered(h/2-2, "Congratulations, you won !", ColorPair::new(YELLOW, BLACK));
+        } else {
+            batch.print_color_centered(h/2-2, "Too bad, you lost :( ",      ColorPair::new(RED, BLACK));
+        }
 
-        batch.print_color_centered(h/2-3,   won,      ColorPair::new(RED, BLACK));
-        batch.print_color_centered(h/2-2,   lost,     ColorPair::new(RED, BLACK));
-        batch.print_color_centered(h/2 + 2, "Press any key to restart", ColorPair::new(TAN, BLACK));
+        batch.print_color_centered(h/2 + 2, "Press any key to end", ColorPair::new(TAN, BLACK));
 
         batch.submit(5_000).expect("error submitting draw batch");
     }

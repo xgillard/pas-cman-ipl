@@ -58,6 +58,8 @@ enum Item {
 
 /// Le type de message qui est envoyé depuis l'extérieur à notre interface de jeu
 enum MessageType {
+    /// To tell the system that you've been registered with the server.
+    REGISTRATION = 0,
     /// To introduce an item in the game
     SPAWN = 1,
     /// To indicate that a given item moves on the map
@@ -66,6 +68,15 @@ enum MessageType {
     EAT_FOOD = 3,
     /// To tell that the game is over
     GAME_OVER = 4,
+};
+
+
+/// Registration est le message qui sert à dire au jeu qu'on est un joueur en particulier.
+struct Registration {
+    /// Ce messagetype devra toujours avoir la valeur REGISTRATION
+    enum MessageType msgt;
+    /// L'identifiant du joueur
+    uint32_t player;
 };
 
 /// Spawn est le message qui sert à introduire un item dans le jeu.
@@ -109,13 +120,13 @@ struct GameOver {
     /// Ce messagetype devra toujours avoir la valeur GAME_OVER
     enum MessageType msgt;
     uint32_t winner;
-    uint32_t loser;
 };
 
 /// Cette union encapsule tous les messages que vous pourriez vouloir envoyer à l'interface
 /// graphique de votre jeu depuis votre programme.
 union Message {
     enum MessageType msgt;
+    struct Registration registration;
     struct Spawn spawn;
     struct Movement movement;
     struct EatFood eat_food;

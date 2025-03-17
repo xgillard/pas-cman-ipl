@@ -54,6 +54,8 @@ pub enum Item {
 #[derive(Debug, Clone, Copy)]
 #[allow(non_camel_case_types)]
 pub enum MessageType {
+    /// To tell the system that you've been registered with the server.
+    REGISTRATION = 0,
     /// To introduce an item in the game
     SPAWN = 1,
     /// To indicate that a given item moves on the map
@@ -62,6 +64,15 @@ pub enum MessageType {
     EAT_FOOD = 3,
     /// To indicate that game is over
     GAME_OVER = 4,
+}
+
+/// Registration est le message qui sert à dire au jeu qu'on est un joueur en particulier.
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+pub struct Registration {
+    /// Ce messagetype devra toujours avoir la valeur REGISTRATION
+    pub msgt: MessageType,
+    pub player: u32,
 }
 
 /// Spawn est le message qui sert à introduire un item dans le jeu.
@@ -114,15 +125,15 @@ pub struct GameOver {
     /// Ce messagetype devra toujours avoir la valeur GAME_OVER
     pub msgt: MessageType,
     pub winner: u32,
-    pub loser: u32,
 }
 
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub union Message {
     pub msgt: MessageType,
+    pub registration: Registration,
     pub spawn: Spawn,
     pub movement: Movement,
     pub eat_food: EatFood,
     pub game_over: GameOver,
-} 
+}
