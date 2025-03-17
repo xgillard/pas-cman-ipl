@@ -1,3 +1,5 @@
+#ifndef __PASCMAN__
+#define __PASCMAN__
 //! Ce header comprend les définitions de types dont vous aurez besoin pour
 //! interagir avec l'interface graphique du jeu que vous allez développer
 //! 
@@ -62,14 +64,8 @@ enum MessageType {
     MOVEMENT = 2,
     /// To indicate that someone ate some food
     EAT_FOOD = 3,
-    /// To indicate that two players were killed because they collided into one another
-    COLLISION = 4,
-     /// To indiacate that the user won the game
-    VICTORY = 5,
-    /// To indicate that user lost the game
-    DEFEAT = 6,
-    /// To indicate that a player left the game (without being purposedly killed by somone)
-    LEFT_GAME = 8,
+    /// To tell that the game is over
+    GAME_OVER = 4,
 };
 
 /// Spawn est le message qui sert à introduire un item dans le jeu.
@@ -100,7 +96,6 @@ struct Movement {
     struct Position pos;
 };
 
-
 /// Indique que le qqn a mangé de la nourriture
 struct EatFood {
     /// Ce messagetype devra toujours avoir la valeur EAT_FOOD
@@ -109,32 +104,12 @@ struct EatFood {
     uint32_t food;
 };
 
-/// Indique que quelqu'un a tué qqn d'autre
-struct Collision {
-    /// Ce messagetype devra toujours avoir la valeur COLLISION
+/// Indique que le jeu est fini.
+struct GameOver {
+    /// Ce messagetype devra toujours avoir la valeur GAME_OVER
     enum MessageType msgt;
-    uint32_t player_a;
-    uint32_t player_b;
-};
-
-/// Indique que quelqu'un a quitté le jeu sans forcément avoir été tué (déconnection)
-struct LeftGame {
-    /// Ce messagetype devra toujours avoir la valeur LEFT_GAME
-    enum MessageType msgt;
-    /// Identitfiant du joueur qui a quitté le jeu
-    uint32_t id;
-};
-
-/// Indique que le joueur a gagné
-struct Victory {
-    /// Ce messagetype devra toujours avoir la valeur VICTORY
-    enum MessageType msgt;
-};
-
-/// Indique que le joueur a perdu
-struct Defeat {
-    /// Ce messagetype devra toujours avoir la valeur DEFEAT
-    enum MessageType msgt;
+    uint32_t winner;
+    uint32_t loser;
 };
 
 /// Cette union encapsule tous les messages que vous pourriez vouloir envoyer à l'interface
@@ -144,8 +119,7 @@ union Message {
     struct Spawn spawn;
     struct Movement movement;
     struct EatFood eat_food;
-    struct Collision collision;
-    struct Victory victory;
-    struct Defeat defeat;
-    struct LeftGame left_game;
+    struct GameOver game_over;
 };
+
+#endif //__PASCMAN__

@@ -8,12 +8,9 @@
 pub mod common;
 /// The logic for when the game is running
 pub mod running;
-/// The logic for when the game is finished and the user has won
-pub mod won;
-/// The logic for when the game is over and the user has lost
-pub mod lost;
+/// The logic for when the game is over
+pub mod over;
 
 pub use common::*;
 pub use running::*;
-pub use won::*;
-pub use lost::*;
+pub use over::*;

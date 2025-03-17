@@ -72,13 +72,13 @@ pub enum Direction {
     Left = 2,
     Up   = 3
 }
-impl Into<u8> for Direction {
-    fn into(self) -> u8 {
-        match self {
-            Self::Down => 0,
-            Self::Right=> 1,
-            Self::Left => 2,
-            Self::Up   => 3
+impl From<Direction> for u8 {
+    fn from(direction : Direction) -> u8 {
+        match direction {
+            Direction::Down => 0,
+            Direction::Right=> 1,
+            Direction::Left => 2,
+            Direction::Up   => 3
         }
     }
 }

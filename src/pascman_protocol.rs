@@ -60,14 +60,8 @@ pub enum MessageType {
     MOVEMENT = 2,
     /// To indicate that someone ate some food
     EAT_FOOD = 3,
-    /// To indicate that two players were killed because they collided into one another
-    COLLISION = 4,
-     /// To indiacate that the user won the game
-    VICTORY = 5,
-    /// To indicate that user lost the game
-    DEFEAT = 6,
-    /// To indicate that a player left the game (without being purposedly killed by somone)
-    LEFT_GAME = 8,
+    /// To indicate that game is over
+    GAME_OVER = 4,
 }
 
 /// Spawn est le message qui sert à introduire un item dans le jeu.
@@ -103,23 +97,6 @@ pub struct Movement {
     pub pos: Position
 }
 
-
-/// Indique que le joueur a gagné
-#[repr(C)]
-#[derive(Debug, Clone, Copy)]
-pub struct Victory {
-    /// Ce messagetype devra toujours avoir la valeur VICTORY
-    pub msgt: MessageType,
-}
-
-/// Indique que le joueur a perdu
-#[repr(C)]
-#[derive(Debug, Clone, Copy)]
-pub struct Defeat {
-    /// Ce messagetype devra toujours avoir la valeur DEFEAT
-    pub msgt: MessageType,
-}
-
 /// Indique que le qqn a mangé de la nourriture
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
@@ -130,26 +107,15 @@ pub struct EatFood {
     pub food: u32,
 }
 
-/// Indique que deux joueurs sont morts parce qu'ils sont entrés en collision
+/// Indique que la partie est finie
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
-pub struct Collision {
-    /// Ce messagetype devra toujours avoir la valeur COLLISION
+pub struct GameOver {
+    /// Ce messagetype devra toujours avoir la valeur GAME_OVER
     pub msgt: MessageType,
-    pub player_a: u32,
-    pub player_b: u32,
+    pub winner: u32,
+    pub loser: u32,
 }
-
-/// Indique que quelqu'un a quitté le jeu sans forcément avoir été tué (déconnection)
-#[repr(C)]
-#[derive(Debug, Clone, Copy)]
-pub struct LeftGame {
-    /// Ce messagetype devra toujours avoir la valeur LEFT_GAME
-    pub msgt: MessageType,
-    /// Identitfiant du joueur qui a quitté le jeu
-    pub id: u32,
-}
-
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -158,8 +124,5 @@ pub union Message {
     pub spawn: Spawn,
     pub movement: Movement,
     pub eat_food: EatFood,
-    pub collision: Collision,
-    pub victory: Victory,
-    pub defeat: Defeat,
-    pub left_game: LeftGame,
+    pub game_over: GameOver,
 } 

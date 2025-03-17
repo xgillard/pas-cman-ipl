@@ -18,16 +18,14 @@ use self::pascman_protocol::MessageType;
 pub enum GameStatus {
     NotStarted,
     Running,
-    Lost,
-    Won
+    Over {winner: u32, loser: u32},
 }
 
 pub struct State {
     pub ecs: World,
     pub resources: Resources,
     pub running: Schedule,
-    pub won: Schedule,
-    pub lost: Schedule,
+    pub over: Schedule,
     pub map_file: String,
 }
 
@@ -35,15 +33,14 @@ impl State {
     pub fn new(channel: std::sync::mpsc::Receiver<pascman_protocol::Message>) -> Self {
         let ecs = World::default();
         let running = run_game_schedule();
-        let won = won_game_schedule();
-        let lost= lost_game_schedule();
+        let over = game_over_schedule();
         let mut resources = Resources::default();
         let rng = RandomNumberGenerator::new();
         resources.insert(rng);
         resources.insert(GameStatus::Running);
         resources.insert(Map{width: 30, height: 20, tiles: vec![TileType::Floor;30*20] });
         resources.insert(channel);
-        Self { ecs, resources, running, won, lost, map_file: String::new() }
+        Self { ecs, resources, running, over, map_file: String::new() }
     }
 
     fn process_message(ecs: &mut World, resources: &Resources, msg: pascman_protocol::Message, status: &mut GameStatus) {
@@ -103,35 +100,10 @@ impl State {
                         ecs.remove(entity);
                     }
                 },
-                MessageType::COLLISION => {
-                    let remove_list = <(Entity, &Id)>::query()
-                        .iter(ecs)
-                        .filter(|(_entity, id)| id.0 == msg.collision.player_a || id.0 == msg.collision.player_b)
-                        .map(|(entity, _)| *entity)
-                        .collect::<Vec<Entity>>();
-                    
-                    for entity in remove_list {
-                        ecs.remove(entity);
-                    }
-                },
-                MessageType::LEFT_GAME => {
-                    let target_id = msg.left_game.id;
-
-                    let entity = <(Entity, &Id)>::query()
-                        .iter(ecs)
-                        .find(|(_entity, id)| id.0 == target_id)
-                        .map(|(entity, _)| *entity);
-                    if let Some(entity) = entity {
-                        if let Some(mut entry) = ecs.entry(entity) {
-                            entry.add_component(LeftGame);
-                        }
-                    }
-                }
-                MessageType::DEFEAT => {
-                    *status = GameStatus::Lost;
-                },
-                MessageType::VICTORY => {
-                    *status = GameStatus::Won;
+                MessageType::GAME_OVER => {
+                    let winner = msg.game_over.winner;
+                    let loser = msg.game_over.loser;
+                    *status = GameStatus::Over { winner, loser };
                 }
             }
         }
@@ -176,10 +148,8 @@ impl GameState for State {
             },
             GameStatus::Running => {
                 self.running.execute(&mut self.ecs, &mut self.resources)},
-            GameStatus::Lost => 
-                self.lost.execute(&mut self.ecs, &mut self.resources),
-            GameStatus::Won => 
-                self.won.execute(&mut self.ecs, &mut self.resources),
+            GameStatus::Over { winner: _, loser: _ } => 
+                self.over.execute(&mut self.ecs, &mut self.resources),
         }
         // 
         
