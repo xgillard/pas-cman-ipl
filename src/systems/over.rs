@@ -6,6 +6,8 @@
 //! Date:    March 2023
 //! Licence: MIT 
 
+use std::process::exit;
+
 use bracket_lib::prelude::*;
 use legion::{Schedule, system};
 use crate::{proceed_to_restart_system, GameStatus, Map, Player};
@@ -22,9 +24,14 @@ pub fn game_over_schedule() -> Schedule {
 pub fn render_gameover_screen(
     #[resource] map: &Map, 
     #[resource] player: &Player,
-    #[resource] status: &GameStatus
+    #[resource] status: &GameStatus,
+    #[resource] key: &Option<VirtualKeyCode>,
 ) {
     if let &GameStatus::Over { winner } = status {
+        if let Some(VirtualKeyCode::Return) = key {
+            exit(0);
+        }
+
         let me = player.0;
 
         let mut batch = DrawBatch::new();
@@ -42,7 +49,7 @@ pub fn render_gameover_screen(
             batch.print_color_centered(h/2-2, "Too bad, you lost :( ",      ColorPair::new(RED, BLACK));
         }
 
-        batch.print_color_centered(h/2 + 2, "Press any key to end", ColorPair::new(TAN, BLACK));
+        batch.print_color_centered(h/2 + 2, "Press ENTER to end", ColorPair::new(TAN, BLACK));
 
         batch.submit(5_000).expect("error submitting draw batch");
     }
