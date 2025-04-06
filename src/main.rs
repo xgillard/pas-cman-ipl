@@ -1,3 +1,5 @@
+use std::env;
+use std::str::FromStr;
 use std::{io::{stdin, Read}, thread};
 
 use legion::Schedule;
@@ -7,6 +9,7 @@ fn main() -> BResult<()> {
     let w = 30;
     let h = 20;
 
+    let resources = env::var("PAS_RESOURCES").unwrap_or(String::from_str("resources/").unwrap());
     let (sx, rx) = std::sync::mpsc::channel();
     let mut state = State::new(rx);
     
@@ -30,7 +33,7 @@ fn main() -> BResult<()> {
         .with_dimensions(w, h)
         .with_fps_cap(10.0)
         .with_tile_dimensions(32, 32)
-        .with_resource_path("resources/")
+        .with_resource_path(resources)
         .with_font("pas-cman-font-32.png", 32, 32)
         .with_font("terminal8x8.png", 8, 8)
         .with_simple_console(w, h,"pas-cman-font-32.png")
