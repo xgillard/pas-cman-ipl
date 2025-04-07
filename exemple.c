@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
     // qui a mangé toute la nourriture (1 food et 1 superfood)
     // c'est lui qui a gagné le jeu.
     for (int i = 0; i < 4; i++) {
-	process_user_command(&state, PLAYER1, LEFT, sout);
+        process_user_command(&state, PLAYER1, LEFT, sout);
         usleep(500000);
     }
 
