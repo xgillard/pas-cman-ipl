@@ -75,25 +75,13 @@ void reset_gamestate(struct GameState *state);
 //       qui doit s'en charger.
 void load_map(FileDescriptor fdmap, FileDescriptor fdbcast, struct GameState *state);
 
+// Cette fonction ecrit le message approprié pour signifier à un client qu'il enregistré
+// et qu'il peut commencer à jouer.
+void send_registered(uint32_t player, FileDescriptor socket);
+
 //#############################################################################
 // COEUR DU JEU
 //#############################################################################
-
-// Cette fonction utilitaire permet de connaitre l'identifiant 
-// d'une resource qui se trouve à une position donnée sur la carte.
-//
-// Cette fonction renvoie -1 en cas d'erreur
-int32_t id(uint32_t x, uint32_t y, enum Item item);
-
-// Cette fonction utilitaire permet de connaitre l'identifiant 
-// d'une resource qui se trouve à une position donnée sur la carte.
-//
-// Cette fonction renvoie -1 en cas d'erreur
-int32_t id_at(struct Position pos, enum Item item);
-
-// Cette fonction utilitaire permet de connaitre l'offset d'une 
-// position dans la carte.
-size_t position2index(struct Position pos);
 
 // Cette fonction traite une commande de l'utilisateur dans son 
 // intégralité. Elle calcule la position suivante du joueur, 
@@ -103,25 +91,5 @@ size_t position2index(struct Position pos);
 // Par ailleurs, cette fonction renvoie 'true' si la partie est 
 // terminée, false sinon.
 bool process_user_command(struct GameState* state, enum Item player, enum Direction dir, FileDescriptor fdbcast);
-
-//#############################################################################
-// COMMUNICATION PROTOCOL (SOCKETS/PIPE)
-//#############################################################################
-
-// Cette fonction ecrit le message approprié pour signifier à un client qu'il est
-void send_registered(uint32_t player, FileDescriptor socket);
-
-// Cette fonction ecrit le message approprié pour signifier aux clients qu'une 
-// resource donnée est introduite dans le jeu.
-void send_spawn_item(uint32_t x, uint32_t y, enum Item item, FileDescriptor fdbcast);
-// Cette fonction ecrit le message approprié pour signifier aux clients qu'un 
-// des joueurs a bougé sur le plateau de jeu.
-void send_player_moved(enum Item player, struct Position to, FileDescriptor fdbcast);
-// Cette fonction ecrit le message approprié pour signifier aux clients que
-// de la nourriture ou superfood a été mangée par un joueur.
-void send_eat_food(enum Item player, enum Item food, struct Position to, FileDescriptor fdbcast);
-// Cette fonction ecrit le message approprié pour signifier aux clients que
-// la partie est terminée.
-void send_game_over(enum Item winner, FileDescriptor fdbcast);
 
 #endif //__SERVER_SHARED__

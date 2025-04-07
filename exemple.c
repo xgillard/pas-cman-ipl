@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
 
     // normalement, la fonction process_user_command génère ce message
     // pour vous automatiquement si l'état du jeu est cohérent.
-    send_game_over(PLAYER1, sout);
+    //send_game_over(PLAYER1, sout);
 
     return 0;
 }
