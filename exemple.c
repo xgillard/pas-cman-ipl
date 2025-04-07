@@ -70,15 +70,14 @@ int main(int argc, char** argv) {
         step_p2 = (step_p2 + 1) % tour_len;
     }
 
-    // Ici on va tricher: on va dire au systeme que le jeu est fini
-    // et que c'est le joueur 1 qui a gagné.
-    state.scores[0] = 10000;
-    state.scores[1] = 0; // joueur 2, tu as perdu.
-    state.game_over = true;
-
-    // On triche encore un peu plus pour forcer l'envoi d'un message
-    // vers l'interface graphique histoire de l'informer du vainqueur.
-    process_user_command(&state, PLAYER2, tour[step_p2], sout);
+    // Ici on va forcer la fin de partie en faisant en sorte que
+    // les joueurs entrent en collision. Comme c'est le joueur1
+    // qui a mangé toute la nourriture (1 food et 1 superfood)
+    // c'est lui qui a gagné le jeu.
+    for (int i = 0; i < 4; i++) {
+	process_user_command(&state, PLAYER1, LEFT, sout);
+        usleep(500000);
+    }
 
     return 0;
 }
