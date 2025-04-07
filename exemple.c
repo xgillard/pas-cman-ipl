@@ -76,9 +76,9 @@ int main(int argc, char** argv) {
     state.scores[1] = 0; // joueur 2, tu as perdu.
     state.game_over = true;
 
-    // normalement, la fonction process_user_command génère ce message
-    // pour vous automatiquement si l'état du jeu est cohérent.
-    //send_game_over(PLAYER1, sout);
+    // On triche encore un peu plus pour forcer l'envoi d'un message
+    // vers l'interface graphique histoire de l'informer du vainqueur.
+    process_user_command(&state, PLAYER2, tour[step_p2], sout);
 
     return 0;
 }
