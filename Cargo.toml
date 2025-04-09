@@ -9,7 +9,7 @@ description = "pas cman c'est pas pacman"
 [dependencies]
 # the feature "webgpu" we are using here is not mandatory. But it is used to avoid issue #318
 # in the game engine (bracket-lib).
-bracket-lib = { version = "0.8.7", features=["webgpu"] }
+bracket-lib = { version = "0.8.7" } #, features=["webgpu"] }
 legion      = "0.4.0"
 structopt   = "0.3.26"
 
