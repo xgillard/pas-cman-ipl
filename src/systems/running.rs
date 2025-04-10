@@ -28,7 +28,8 @@ pub fn run_game_schedule() -> Schedule {
 fn _direction_to_stdout(direction: Direction) {
     let mut stdout = io::stdout();
 
-    stdout.write_all(&[direction.into()]).expect("could not write to stdout");
+    let dir: [u8; 4] = direction.into();
+    stdout.write_all(&dir).expect("could not write to stdout");
     stdout.flush().expect("could not flush stdout");
 }
 

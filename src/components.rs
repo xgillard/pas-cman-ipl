@@ -76,13 +76,13 @@ pub enum Direction {
     Left = 2,
     Up   = 3
 }
-impl From<Direction> for u8 {
-    fn from(direction : Direction) -> u8 {
+impl From<Direction> for [u8; 4] {
+    fn from(direction : Direction) -> [u8; 4] {
         match direction {
-            Direction::Down => 0,
-            Direction::Right=> 1,
-            Direction::Left => 2,
-            Direction::Up   => 3
+            Direction::Down => 0_u32.to_ne_bytes(),
+            Direction::Right=> 1_u32.to_ne_bytes(),
+            Direction::Left => 2_u32.to_ne_bytes(),
+            Direction::Up   => 3_u32.to_ne_bytes(),
         }
     }
 }
