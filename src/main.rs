@@ -26,7 +26,7 @@ fn main() -> BResult<()> {
     let context = BTermBuilder::new()
         .with_title("pas cman")
         .with_dimensions(w, h)
-        .with_fps_cap(10.0)
+        //.with_fps_cap(30.0)
         .with_tile_dimensions(32, 32)
         .with_resource_path(resources)
         .with_font("pas-cman-font-32.png", 32, 32)
